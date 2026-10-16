@@ -1,0 +1,6 @@
+{
+  "name": "Neek Watches — Premium Timepieces E-Commerce",
+  "description": "Premium watch-selling e-commerce experience featuring classic, luxury, smart, and sports timepieces with cart, wishlist, and fast checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

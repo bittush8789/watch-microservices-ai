@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # -------------------------------------------------------------
+  # MongoDB Database Container
+  # -------------------------------------------------------------
+  mongo:
+    image: mongo:7.0
+    container_name: neek-mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: neek_watches
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - neek-network
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', 'db.adminCommand("ping")']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------------
+  # Neek Watches Full-Stack Application (Express + Vite + MongoDB)
+  # -------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: neek-watches-app
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/neek_watches
+      - JWT_SECRET=neek_watches_luxury_secret_jwt_key_2026
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - neek-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  neek-network:
+    driver: bridge
